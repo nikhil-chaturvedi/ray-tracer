@@ -34,6 +34,10 @@ class Vector {
         return new Vector(scalar * v.x, scalar * v.y, scalar * v.z);
     }
 
+    static Vector unit(Vector v) {
+        return scale(1.0/norm(v), v);
+    }
+
     static Vector add(Vector v1, Vector v2) {
         return new Vector(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
     }
@@ -44,5 +48,24 @@ class Vector {
 
     static double dot(Vector v1, Vector v2) {
         return ((v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z));
+    }
+
+    static Vector cross(Vector v1, Vector v2) {
+        double x = (v1.y * v2.z) - (v1.z * v2.y);
+        double y = (v1.z * v2.x) - (v1.x * v2.z);
+        double z = (v1.x * v2.y) - (v1.y * v2.x);
+        return new Vector(x, y, z);
+    }
+
+    double getX() {
+        return x;
+    }
+
+    double getY() {
+        return y;
+    }
+
+    double getZ() {
+        return z;
     }
 }

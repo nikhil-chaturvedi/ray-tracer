@@ -10,8 +10,7 @@ import java.util.Scanner;
  * Created by Nikhil on 27/01/17.
  */
 class View {
-    private Vector viewReference;
-    private Vector viewPlane;
+    private VCS vcs;
     private Vector eye;
 
     private int screenHeight;
@@ -24,10 +23,15 @@ class View {
         JSONObject root = new JSONObject(jsonConfig);
 
         JSONObject viewRef = root.getJSONObject("view_reference");
-        this.viewReference = new Vector(viewRef, "ref");
+        Vector viewReference = new Vector(viewRef, "ref");
 
         JSONObject viewPlane = root.getJSONObject("view_plane");
-        this.viewPlane = new Vector(viewPlane, "normal");
+        Vector normal = new Vector(viewPlane, "normal");
+
+        JSONObject upVector = root.getJSONObject("up_vector");
+        Vector up = new Vector(upVector, "up");
+
+        this.vcs = new VCS(viewReference, normal, up);
 
         double eyeDist = root.getDouble("eye");
         this.eye = new Vector(0.0, 0.0, -eyeDist);
