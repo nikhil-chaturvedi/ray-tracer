@@ -1,0 +1,48 @@
+import org.json.JSONObject;
+
+/**
+ * Created by Nikhil on 27/01/17.
+ */
+class Vector {
+    private double x;
+    private double y;
+    private double z;
+
+    Vector(double x, double y, double z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
+    Vector(Vector v) {
+        this.x = v.x;
+        this.y = v.y;
+        this.z = v.z;
+    }
+
+    Vector(JSONObject obj, String key) {
+        this.x = obj.getDouble(key + "_x");
+        this.y = obj.getDouble(key + "_y");
+        this.z = obj.getDouble(key + "_z");
+    }
+
+    static double norm(Vector v) {
+        return Math.sqrt((v.x * v.x) + (v.y * v.y) + (v.z * v.z));
+    }
+
+    static Vector scale(double scalar, Vector v) {
+        return new Vector(scalar * v.x, scalar * v.y, scalar * v.z);
+    }
+
+    static Vector add(Vector v1, Vector v2) {
+        return new Vector(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
+    }
+
+    static Vector subtract(Vector v1, Vector v2) {
+        return new Vector(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
+    }
+
+    static double dot(Vector v1, Vector v2) {
+        return ((v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z));
+    }
+}

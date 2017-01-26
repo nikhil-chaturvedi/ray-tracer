@@ -1,0 +1,23 @@
+{
+	"view_reference": {
+		"ref_x": 0.0,
+		"ref_y": 0.0,
+		"ref_z": 0.0
+	},
+	"view_plane": {
+		"normal_x": 0.0,
+		"normal_y": 0.0,
+		"normal_z": -1.0
+	},
+	"eye": 250.0,
+	"rows": 500,
+	"columns": 500,
+	"entities": [{
+		"sphere": {
+			"centre_x": 250.0,
+			"centre_y": 250.0,
+			"centre_z": 0.0,
+			"radius": 25.0
+		}	
+	}]
+}
