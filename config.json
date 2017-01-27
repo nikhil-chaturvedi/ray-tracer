@@ -1,7 +1,7 @@
 {
 	"view_reference": {
-		"ref_x": 0.0,
-		"ref_y": 0.0,
+		"ref_x": 350.0,
+		"ref_y": 350.0,
 		"ref_z": 0.0
 	},
 	"view_plane": {
@@ -22,7 +22,7 @@
 			"centre_x": 250.0,
 			"centre_y": 250.0,
 			"centre_z": 0.0,
-			"radius": 25.0
+			"radius": 50.0
 		}	
 	}]
 }

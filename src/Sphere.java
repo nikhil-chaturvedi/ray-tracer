@@ -22,10 +22,16 @@ class Sphere implements Entity {
         double a = 1.0;
         double b = 2.0 * ( ray.getDirection().getX()*(ray.getOrigin().getX() - centre.getX()) +
                 ray.getDirection().getY()*(ray.getOrigin().getY() - centre.getY()) +
-                ray.getDirection().getZ()*(ray.getOrigin().getZ() - centre.getZ())) ;
+                ray.getDirection().getZ()*(ray.getOrigin().getZ() - centre.getZ()));
         double c = (ray.getOrigin().getX() - centre.getX())*(ray.getOrigin().getX() - centre.getX())
                 + (ray.getOrigin().getY() - centre.getY())*(ray.getOrigin().getY() - centre.getY())
-                + (ray.getOrigin().getZ() - centre.getZ())*(ray.getOrigin().getZ() - centre.getZ()) ;
+                + (ray.getOrigin().getZ() - centre.getZ())*(ray.getOrigin().getZ() - centre.getZ());
+        c -= radius * radius;
+
+        //System.out.println(b);
+        if ((b*b - 4*a*c) < 0.0)
+            return null;
+
         double t0 = (-b + Math.sqrt(b*b - 4*a*c))/(2*a);
         double t1 = (-b - Math.sqrt(b*b - 4*a*c))/(2*a);
 

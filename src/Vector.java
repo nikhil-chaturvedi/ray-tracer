@@ -57,6 +57,10 @@ class Vector {
         return new Vector(x, y, z);
     }
 
+    void print() {
+        System.out.println(x + " " + y + " " + z);
+    }
+
     double getX() {
         return x;
     }
