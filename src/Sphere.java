@@ -12,7 +12,7 @@ class Sphere implements Entity {
         this.radius = conf.getDouble("radius");
     }
 
-    public double getIntersection(Vector ray) {
+    public double getIntersection(Ray ray) {
         return 0.0;
     }
 }

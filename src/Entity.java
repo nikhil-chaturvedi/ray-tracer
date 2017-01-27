@@ -2,5 +2,5 @@
  * Created by Nikhil on 27/01/17.
  */
 interface Entity {
-    double getIntersection(Vector ray);
+    double getIntersection(Ray ray);
 }

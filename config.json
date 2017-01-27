@@ -9,6 +9,11 @@
 		"normal_y": 0.0,
 		"normal_z": -1.0
 	},
+	"up_vector": {
+		"up_x": 0.0,
+		"up_y": 1.0,
+		"up_z": 0.0
+	},
 	"eye": 250.0,
 	"rows": 500,
 	"columns": 500,

@@ -14,7 +14,7 @@ class VCS {
         this.n = Vector.unit(normal);
         up = Vector.subtract(up, Vector.scale(Vector.dot(up, this.n), this.n));
         this.v = Vector.unit(up);
-        this.u = Vector.cross(this.v, this.n);
+        this.u = Vector.cross(this.n, this.v);
     }
 
     Vector convertVCStoWCS(Vector p) {
