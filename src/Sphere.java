@@ -18,7 +18,7 @@ class Sphere implements Entity {
         return y;
     }
 
-    public Vector getIntersectionPoint(Ray ray) {
+    public Vector getIntersection(Ray ray) {
         double a = 1.0;
         double b = 2.0 * ( ray.getDirection().getX()*(ray.getOrigin().getX() - centre.getX()) +
                 ray.getDirection().getY()*(ray.getOrigin().getY() - centre.getY()) +
@@ -37,9 +37,9 @@ class Sphere implements Entity {
     }
 
     public Vector getNormal(Ray ray) {
-        return new Vector ( (getIntersection(ray) - centre.getX())/radius,
-                (getIntersection(ray) - centre.getY())/radius,
-                (getIntersection(ray) - centre.getZ())/radius );
+        return new Vector ( (getIntersection(ray).getX() - centre.getX())/radius,
+                (getIntersection(ray).getY() - centre.getY())/radius,
+                (getIntersection(ray).getZ() - centre.getZ())/radius );
     }
 }
 
