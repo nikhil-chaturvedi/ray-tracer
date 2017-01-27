@@ -11,4 +11,28 @@ class Ray {
         this.direction = direction;
         this.intensity = intensity;
     }
+
+    public Vector getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(Vector origin) {
+        this.origin = origin;
+    }
+
+    public Vector getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Vector direction) {
+        this.direction = direction;
+    }
+
+    public double getIntensity() {
+        return intensity;
+    }
+
+    public void setIntensity(double intensity) {
+        this.intensity = intensity;
+    }
 }
