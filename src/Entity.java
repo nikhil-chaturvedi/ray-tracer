@@ -3,7 +3,7 @@
  */
 interface Entity {
     Vector getIntersection(Ray ray);
-    Vector getNormal(Ray ray, Vector intersection);
+    Vector getNormal(Vector intersection);
     Colour getColour();
     Material getMaterial();
 }

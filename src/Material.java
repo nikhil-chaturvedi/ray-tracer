@@ -13,7 +13,7 @@ class Material {
         this.ka = material.getDouble("mat_ka");
         this.kd = material.getDouble("mat_kd");
         this.ks = material.getDouble("mat_ks");
-        this.roughness = material.getInt("rough");
+        this.roughness = material.getInt("mat_rough");
     }
 
     double getAmbientCoeff() {

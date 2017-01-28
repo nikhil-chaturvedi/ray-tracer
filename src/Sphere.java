@@ -32,7 +32,7 @@ class Sphere implements Entity {
                 + (ray.getOrigin().getY() - centre.getY())*(ray.getOrigin().getY() - centre.getY())
                 + (ray.getOrigin().getZ() - centre.getZ())*(ray.getOrigin().getZ() - centre.getZ());
         c -= radius * radius;
-        
+
         if ((b*b - 4*a*c) < 0.0)
             return null;
 
@@ -46,10 +46,8 @@ class Sphere implements Entity {
                 ray.getOrigin().getZ() + ray.getDirection().getZ()*t);
     }
 
-    public Vector getNormal(Ray ray, Vector intersection) {
-        return new Vector ( (intersection.getX() - centre.getX())/radius,
-                (intersection.getY() - centre.getY())/radius,
-                (intersection.getZ() - centre.getZ())/radius );
+    public Vector getNormal(Vector intersection) {
+        return Vector.unit(Vector.subtract(intersection, centre));
     }
 
     public Colour getColour() {

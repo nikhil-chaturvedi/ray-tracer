@@ -54,7 +54,7 @@ class View {
 
         this.lights = new ArrayList<>();
         JSONArray lights = root.getJSONArray("lights");
-        for (int i = 0; i < entities.length(); i++) {
+        for (int i = 0; i < lights.length(); i++) {
             JSONObject light = lights.getJSONObject(i);
             this.lights.add(new Light(light));
         }
@@ -62,7 +62,7 @@ class View {
 
     void render(String filename) throws IOException {
         BufferedImage img = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_RGB);
-        int red = 255 << 16;
+
         for(int i = 0; i < screenWidth; i++) {
             for(int j = 0; j < screenHeight; j++) {
                 Vector rayDir = vcs.convertVCStoWCS(new Vector((double)(i-screenWidth/2), (double)(j-screenHeight/2), 0.0));
@@ -70,16 +70,32 @@ class View {
                 Ray ray = new Ray(eye, rayDir, 1.0);
 
                 Entity intersectingEntity = null;
-                Vector intersection = null;
                 for(Entity entity : entities) {
-                    intersection = entity.getIntersection(ray);
-                    if (intersection != null) {
-                        Colour colour = null;
-                        img.setRGB(i, screenHeight - j, red);
+                    if (entity.getIntersection(ray) != null) {
+                        intersectingEntity = entity;
+                        break;
                     }
                 }
+
+                if (intersectingEntity == null)
+                    continue;
+
+                Vector intersection = intersectingEntity.getIntersection(ray);
+                Vector normal = intersectingEntity.getNormal(intersection);
+
+                Colour colour = null;
+                for(Light light : lights) {
+                    if (colour == null) {
+                        colour = light.getColour(intersectingEntity, intersection, normal, eye);
+                        continue;
+                    }
+                    colour = Colour.add(colour, light.getColour(intersectingEntity, intersection, normal, eye));
+                }
+
+                img.setRGB(i, screenHeight - j, colour.getColourCode());
             }
         }
+
         ImageIO.write(img, "png", new File(filename));
     }
 }
