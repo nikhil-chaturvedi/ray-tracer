@@ -7,9 +7,14 @@ class Sphere implements Entity {
     private Vector centre;
     private double radius;
 
+    private Colour colour;
+    private Material material;
+
     Sphere(JSONObject conf) {
-        this.centre = new Vector(conf, "centre");
+        this.centre = new Vector(conf.getJSONObject("centre"), "centre");
         this.radius = conf.getDouble("radius");
+        this.colour = new Colour(conf.getJSONObject("colour"), "col");
+        this.material = new Material(conf.getJSONObject("material"));
     }
 
     private double getMin(double x, double y) {
@@ -27,8 +32,7 @@ class Sphere implements Entity {
                 + (ray.getOrigin().getY() - centre.getY())*(ray.getOrigin().getY() - centre.getY())
                 + (ray.getOrigin().getZ() - centre.getZ())*(ray.getOrigin().getZ() - centre.getZ());
         c -= radius * radius;
-
-        //System.out.println(b);
+        
         if ((b*b - 4*a*c) < 0.0)
             return null;
 
@@ -42,10 +46,18 @@ class Sphere implements Entity {
                 ray.getOrigin().getZ() + ray.getDirection().getZ()*t);
     }
 
-    public Vector getNormal(Ray ray) {
-        return new Vector ( (getIntersection(ray).getX() - centre.getX())/radius,
-                (getIntersection(ray).getY() - centre.getY())/radius,
-                (getIntersection(ray).getZ() - centre.getZ())/radius );
+    public Vector getNormal(Ray ray, Vector intersection) {
+        return new Vector ( (intersection.getX() - centre.getX())/radius,
+                (intersection.getY() - centre.getY())/radius,
+                (intersection.getZ() - centre.getZ())/radius );
+    }
+
+    public Colour getColour() {
+        return colour;
+    }
+
+    public Material getMaterial() {
+        return material;
     }
 }
 

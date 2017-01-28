@@ -1,7 +1,7 @@
 {
 	"view_reference": {
-		"ref_x": 350.0,
-		"ref_y": 350.0,
+		"ref_x": 250.0,
+		"ref_y": 250.0,
 		"ref_z": 0.0
 	},
 	"view_plane": {
@@ -14,15 +14,17 @@
 		"up_y": 1.0,
 		"up_z": 0.0
 	},
-	"eye": 250.0,
+	"eye": 1000.0,
 	"rows": 500,
 	"columns": 500,
 	"entities": [{
 		"sphere": {
-			"centre_x": 250.0,
-			"centre_y": 250.0,
-			"centre_z": 0.0,
-			"radius": 50.0
+			"radius": 50.0,
+			"centre": {
+				"centre_x": 350.0,
+				"centre_y": 350.0,
+				"centre_z": 0.0
+			}
 		}	
 	}]
 }

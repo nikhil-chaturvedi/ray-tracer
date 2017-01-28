@@ -20,6 +20,7 @@ class View {
     private int screenWidth;
 
     private ArrayList<Entity> entities;
+    private ArrayList<Light> lights;
 
     View(String configFileName) throws FileNotFoundException {
         String jsonConfig = new Scanner(new File(configFileName)).useDelimiter("\\Z").next();
@@ -50,6 +51,13 @@ class View {
                 this.entities.add(new Sphere(entity.getJSONObject("sphere")));
             }
         }
+
+        this.lights = new ArrayList<>();
+        JSONArray lights = root.getJSONArray("lights");
+        for (int i = 0; i < entities.length(); i++) {
+            JSONObject light = lights.getJSONObject(i);
+            this.lights.add(new Light(light));
+        }
     }
 
     void render(String filename) throws IOException {
@@ -59,13 +67,15 @@ class View {
             for(int j = 0; j < screenHeight; j++) {
                 Vector rayDir = vcs.convertVCStoWCS(new Vector((double)(i-screenWidth/2), (double)(j-screenHeight/2), 0.0));
                 rayDir = Vector.unit(Vector.subtract(rayDir, eye));
-                if (i == 0 && j == 0)
-                    rayDir.print();
                 Ray ray = new Ray(eye, rayDir, 1.0);
 
+                Entity intersectingEntity = null;
+                Vector intersection = null;
                 for(Entity entity : entities) {
-                    if (entity.getIntersection(ray) != null) {
-                        img.setRGB(i, j, red);
+                    intersection = entity.getIntersection(ray);
+                    if (intersection != null) {
+                        Colour colour = null;
+                        img.setRGB(i, screenHeight - j, red);
                     }
                 }
             }
