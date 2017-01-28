@@ -8,6 +8,12 @@ class Vector {
     private double y;
     private double z;
 
+    public Vector() {
+        this.x=0;
+        this.y=0;
+        this.z=0;
+    }
+
     Vector(double x, double y, double z) {
         this.x = x;
         this.y = y;
@@ -59,6 +65,18 @@ class Vector {
 
     void print() {
         System.out.println(x + " " + y + " " + z);
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    public void setZ(double z) {
+        this.z = z;
     }
 
     double getX() {

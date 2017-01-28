@@ -1,6 +1,7 @@
 /**
  * Created by Nikhil on 27/01/17.
  */
+@SuppressWarnings("DefaultFileTemplate")
 class VCS {
     private Vector viewReference;
 
