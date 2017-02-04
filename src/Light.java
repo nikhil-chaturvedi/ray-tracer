@@ -16,7 +16,7 @@ class Light {
         Colour ambientColour = getAmbientColour(entity);
         Colour diffuseColour = getDiffuseColour(entity, intersection, normal);
         Colour specularColour = getSpecularColour(entity, intersection, normal, eye);
-        //return diffuseColour;
+        //return specularColour;
         return Colour.add(ambientColour, Colour.add(diffuseColour, specularColour));
     }
 
@@ -29,6 +29,8 @@ class Light {
         Vector lightVector = Vector.unit(Vector.subtract(this.position, intersection));
 
         double coeff = Vector.dot(normal, lightVector);
+        if (coeff < 0.0)
+            return new Colour(0,0,0);
         coeff *= entity.getMaterial().getDiffuseCoeff();
 
         Colour multColour = Colour.multiply(this.colour, entity.getColour());
@@ -44,6 +46,8 @@ class Light {
         Vector viewVector = Vector.unit(Vector.subtract(eye, intersection));
 
         double coeff = Vector.dot(reflectVector, viewVector);
+        if (coeff < 0.0)
+            return new Colour(0,0,0);
         coeff = Math.pow(coeff, entity.getMaterial().getRoughness());
         coeff *= entity.getMaterial().getSpecularCoeff();
 

@@ -2,6 +2,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -60,7 +61,10 @@ class View {
         }
     }
 
-    void render(String filename) throws IOException {
+    void render(String filename, int sampleSize) throws IOException {
+        int screenWidth = sampleSize * this.screenWidth;
+        int screenHeight = sampleSize * this.screenHeight;
+
         BufferedImage img = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_RGB);
 
         for(int i = 0; i < screenWidth; i++) {
@@ -85,10 +89,6 @@ class View {
 
                 Colour colour = null;
                 for(Light light : lights) {
-                    if (colour == null) {
-                        colour = light.getColour(intersectingEntity, intersection, normal, eye);
-                        continue;
-                    }
                     colour = Colour.add(colour, light.getColour(intersectingEntity, intersection, normal, eye));
                 }
 
@@ -96,6 +96,30 @@ class View {
             }
         }
 
+        img = antiAlias(img, sampleSize);
+
         ImageIO.write(img, "png", new File(filename));
+    }
+
+    private BufferedImage antiAlias(BufferedImage img, int sampleSize) {
+        BufferedImage newImg = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_RGB);
+        for (int i = 0; i < screenWidth; i++) {
+            for (int j = 0; j < screenHeight; j++) {
+                Colour colour = null;
+                for (int p = 0; p < sampleSize; p++) {
+                    for (int q = 0; q < sampleSize; q++) {
+                        int x = sampleSize * i + p;
+                        int y = sampleSize * j + q;
+                        int newColour = img.getRGB(x, y);
+                        int blue = newColour & 255;
+                        int green = (newColour >> 8) & 255;
+                        int red = (newColour >> 16) & 255;
+                        colour = Colour.add(colour, new Colour(red, green, blue));
+                    }
+                }
+                newImg.setRGB(i, j, colour.getColourCode());
+            }
+        }
+        return newImg;
     }
 }
