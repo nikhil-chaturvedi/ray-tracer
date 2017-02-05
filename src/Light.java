@@ -16,7 +16,7 @@ class Light {
         Colour ambientColour = getAmbientColour(entity);
         Colour diffuseColour = getDiffuseColour(entity, intersection, normal);
         Colour specularColour = getSpecularColour(entity, intersection, normal, eye);
-        //return specularColour;
+        //return Colour.add(diffuseColour, ambientColour);
         return Colour.add(ambientColour, Colour.add(diffuseColour, specularColour));
     }
 

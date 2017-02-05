@@ -99,7 +99,11 @@ public class Polygon implements Entity{
         return false;
     }
 
-    public Vector getIntersection(Ray ray) {
+    public double getTimeIntersection(Ray ray) {
+        return 0.0;
+    }
+
+    public Vector getIntersection(Ray ray, double time) {
         Vector vertexlist[] = this.getPoints();
 
         Vector v1 = new Vector(vertexlist[1].getX() - vertexlist[0].getX(),
@@ -133,4 +137,7 @@ public class Polygon implements Entity{
         return normal;
     }
 
+    public Ray getRefractedRay (Ray ray, Vector intersection, Vector normal) {
+        return ray;
+    }
 }

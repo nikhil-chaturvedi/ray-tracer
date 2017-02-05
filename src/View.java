@@ -67,32 +67,24 @@ class View {
 
         BufferedImage img = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_RGB);
 
+        double wl = -this.screenWidth/2, wr = this.screenWidth/2;
+        double wt = this.screenHeight/2, wb = -this.screenHeight/2;
+        double delU = (wr - wl)/(double)screenWidth;
+        double delV = (wt - wb)/(double)screenHeight;
+
         for(int i = 0; i < screenWidth; i++) {
             for(int j = 0; j < screenHeight; j++) {
-                Vector rayDir = vcs.convertVCStoWCS(new Vector((double)(i-screenWidth/2), (double)(j-screenHeight/2), 0.0));
+                Vector rayDir = vcs.convertVCStoWCS(new Vector(wl + (delU * i), wt - (delV * j), 0.0));
                 rayDir = Vector.unit(Vector.subtract(rayDir, eye));
-                Ray ray = new Ray(eye, rayDir, 1.0);
+                Ray ray = new Ray(eye, rayDir);
 
-                Entity intersectingEntity = null;
-                for(Entity entity : entities) {
-                    if (entity.getIntersection(ray) != null) {
-                        intersectingEntity = entity;
-                        break;
-                    }
-                }
+                Tracer tracer = new Tracer(entities, lights, eye);
+                Colour colour = tracer.trace(ray, 4);
 
-                if (intersectingEntity == null)
+                if (colour == null)
                     continue;
 
-                Vector intersection = intersectingEntity.getIntersection(ray);
-                Vector normal = intersectingEntity.getNormal(intersection);
-
-                Colour colour = null;
-                for(Light light : lights) {
-                    colour = Colour.add(colour, light.getColour(intersectingEntity, intersection, normal, eye));
-                }
-
-                img.setRGB(i, screenHeight - j, colour.getColourCode());
+                img.setRGB(i, j, colour.getColourCode());
             }
         }
 

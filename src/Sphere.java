@@ -17,13 +17,7 @@ class Sphere implements Entity {
         this.material = new Material(conf.getJSONObject("material"));
     }
 
-    private double getMin(double x, double y) {
-        if (x<y)
-            return x;
-        return y;
-    }
-
-    public Vector getIntersection(Ray ray) {
+    public double getTimeIntersection(Ray ray) {
         double a = 1.0;
         double b = 2.0 * ( ray.getDirection().getX()*(ray.getOrigin().getX() - centre.getX()) +
                 ray.getDirection().getY()*(ray.getOrigin().getY() - centre.getY()) +
@@ -34,16 +28,48 @@ class Sphere implements Entity {
         c -= radius * radius;
 
         if ((b*b - 4*a*c) < 0.0)
-            return null;
+            return 0.0;
 
         double t0 = (-b + Math.sqrt(b*b - 4*a*c))/(2*a);
         double t1 = (-b - Math.sqrt(b*b - 4*a*c))/(2*a);
 
-        double t = getMin(t0,t1);
+        final double EPSILON = 0.01;
+        if (t0 < EPSILON && t1 < EPSILON)
+            return 0.0;
+        else if (t0 > EPSILON && t1 < EPSILON)
+            return t0;
+        else if (t0 < EPSILON && t1 > EPSILON)
+            return t1;
+        return Math.min(t0, t1);
+    }
 
-        return new Vector(ray.getOrigin().getX() + ray.getDirection().getX()*t,
-                ray.getOrigin().getY() + ray.getDirection().getY()*t,
-                ray.getOrigin().getZ() + ray.getDirection().getZ()*t);
+    public Vector getIntersection(Ray ray, double time) {
+        return new Vector(ray.getOrigin().getX() + ray.getDirection().getX()*time,
+                ray.getOrigin().getY() + ray.getDirection().getY()*time,
+                ray.getOrigin().getZ() + ray.getDirection().getZ()*time);
+    }
+
+    public Ray getRefractedRay (Ray ray, Vector intersection, Vector normal) {
+        Ray refractRay = refractAtSurface(ray, intersection, normal, material.getRefractiveIndex());
+
+        double timeOfLeave = getTimeIntersection(refractRay);
+        Vector pointOfLeave = getIntersection(refractRay, timeOfLeave);
+        Vector normalAtLeave = Vector.scale(-1.0, getNormal(pointOfLeave));
+
+        return refractAtSurface(refractRay, pointOfLeave, normalAtLeave, 1.0/material.getRefractiveIndex());
+    }
+
+    private Ray refractAtSurface (Ray incidentRay, Vector intersection, Vector normal, double refIndex) {
+        double incidentAngle = Math.acos(-1.0 * Vector.dot(incidentRay.getDirection(), normal));
+        double refractAngle = Math.asin(Math.sin(incidentAngle)/refIndex);
+
+        Vector tempDir1 = Vector.add(incidentRay.getDirection(), Vector.scale(Math.cos(incidentAngle), normal));
+
+        Vector tempDir2 = Vector.scale(1.0/refIndex, tempDir1);
+        Vector tempDir3 = Vector.scale(Math.cos(refractAngle), normal);
+        Vector refractDir = Vector.unit(Vector.subtract(tempDir2, tempDir3));
+
+        return new Ray(intersection, refractDir);
     }
 
     public Vector getNormal(Vector intersection) {

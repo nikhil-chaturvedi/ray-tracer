@@ -52,6 +52,8 @@ class Colour {
     }
 
     static Colour scale(double scalar, Colour c) {
+        if (c == null)
+            return null;
         return new Colour(  (int)(scalar * (double)(c.r/c.numColours)),
                             (int)(scalar * (double)(c.g/c.numColours)),
                             (int)(scalar * (double)(c.b/c.numColours)) );

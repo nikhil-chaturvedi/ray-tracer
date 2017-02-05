@@ -50,7 +50,11 @@ public class Plane implements Entity {
         return normal;
     }
 
-    public Vector getIntersection (Ray ray) {
+    public double getTimeIntersection (Ray ray) {
+        return 0.0;
+    }
+
+    public Vector getIntersection (Ray ray, double time) {
         Vector origin = ray.getOrigin();
         Vector direction = ray.getDirection();
         double D = - (Vector.dot(normal, point));
@@ -59,6 +63,10 @@ public class Plane implements Entity {
         return new Vector(origin.getX() + direction.getX()*t,
                 origin.getY() + direction.getY()*t,
                 origin.getZ() + direction.getZ()*t);
+    }
+
+    public Ray getRefractedRay (Ray ray, Vector intersection, Vector normal) {
+        return ray;
     }
 }
 

@@ -34,9 +34,58 @@
 				"mat_ka": 0.75,
 				"mat_kd": 1.0,
 				"mat_ks": 1.0,
-				"mat_rough": 2
+				"mat_krg": 0.0,
+				"mat_ktg": 0.0,
+				"mat_rough": 2,
+				"mat_index": 1.5
 			}
 		}	
+	}, {
+		"sphere": {
+			"radius": 50.0,
+			"centre": {
+				"centre_x": 220.0,
+				"centre_y": 220.0,
+				"centre_z": -50.0
+			},
+			"colour": {
+				"col_r": 255,
+				"col_g": 255,
+				"col_b": 255
+			},
+			"material": {
+				"mat_ka": 0.75,
+				"mat_kd": 1.0,
+				"mat_ks": 1.0,
+				"mat_krg": 1.0,
+				"mat_ktg": 0.0,
+				"mat_rough": 2,
+				"mat_index": 1.5
+			}
+		}
+	}, {
+		"sphere": {
+			"radius": 60.0,
+			"centre": {
+				"centre_x": 300.0,
+				"centre_y": 300.0,
+				"centre_z": 100.0
+			},
+			"colour": {
+				"col_r": 220,
+				"col_g": 220,
+				"col_b": 255
+			},
+			"material": {
+				"mat_ka": 0.75,
+				"mat_kd": 1.0,
+				"mat_ks": 1.0,
+				"mat_krg": 0.0,
+				"mat_ktg": 1.0,
+				"mat_rough": 2,
+				"mat_index": 1.5
+			}
+		}
 	}],
 	"lights": [{
 		"position": {
