@@ -1,5 +1,6 @@
 import org.json.JSONObject;
 import org.json.JSONArray;
+import org.ejml.simple.SimpleMatrix;
 
 /**
  * Created by Nikhil on 27/01/17.
@@ -11,7 +12,7 @@ class Sphere implements Entity {
     private Colour colour;
     private Material material;
     private boolean isTransformed;
-    private double[][] transformation;
+    private SimpleMatrix transformation_matrix;
 
     Sphere(JSONObject conf) {
         this.centre = new Vector(conf.getJSONObject("centre"), "centre");
@@ -20,16 +21,23 @@ class Sphere implements Entity {
         this.material = new Material(conf.getJSONObject("material"));
         this.isTransformed = conf.getBoolean("isTransformed");
         if(isTransformed()) {
-            this.transformation = new double[4][4];
+
+            double[][] transformation = new double[4][4];
             JSONArray transforms = conf.getJSONArray("transformation");
             for(int i=0; i<4; i++) {
                 JSONArray row = transforms.getJSONArray(i);
                 for(int j=0; j<4; j++) {
-                    this.transformation[i][j] = row.getDouble(j);
+                    transformation[i][j] = row.getDouble(j);
+                  //  System.out.print(transformation[i][j] + " ");
                 }
+                //System.out.println();
             }
+            this.transformation_matrix = new SimpleMatrix(transformation);
+
         }
-        this.transformation = null;
+        else {
+            this.transformation_matrix = null;
+        }
     }
 
     public double getTimeIntersection(Ray ray) {
@@ -63,7 +71,7 @@ class Sphere implements Entity {
                 ray.getOrigin().getY() + ray.getDirection().getY() * time,
                 ray.getOrigin().getZ() + ray.getDirection().getZ() * time);
         if(isTransformed()) {
-            return Vector.transform(intersection, getTransformation());
+            return Vector.transform(intersection, transformation_matrix);
         }
         return intersection;
     }
@@ -94,7 +102,7 @@ class Sphere implements Entity {
     public Vector getNormal(Vector intersection) {
        Vector normal =  Vector.unit(Vector.subtract(intersection, centre));
        if(isTransformed()) {
-           return Vector.transform(normal, Vector.transpose(Vector.invert(getTransformation())));
+           return Vector.transform(normal, transformation_matrix.invert().transpose());
        }
        return normal;
     }
@@ -110,10 +118,6 @@ class Sphere implements Entity {
 
     public boolean isTransformed() {
         return isTransformed;
-    }
-
-    public double[][] getTransformation() {
-        return transformation;
     }
 }
 

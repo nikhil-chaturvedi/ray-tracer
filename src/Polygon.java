@@ -1,4 +1,6 @@
 import java.util.Arrays;
+
+import org.ejml.simple.SimpleMatrix;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
@@ -14,7 +16,7 @@ public class Polygon implements Entity{
     private Colour colour;
     private Vector normal;
     private boolean isTransformed;
-    private double[][] transformation;
+    private SimpleMatrix transformation_matrix;
 
     @Override
     public Colour getColour() {
@@ -38,9 +40,6 @@ public class Polygon implements Entity{
         return isTransformed;
     }
 
-    public double[][] getTransformation() {
-        return transformation;
-    }
 
     Polygon (JSONObject conf) {
         this.npoints = conf.getInt("npoints");
@@ -56,16 +55,21 @@ public class Polygon implements Entity{
 
         this.isTransformed = conf.getBoolean("isTransformed");
         if(isTransformed()) {
-            this.transformation = new double[4][4];
+
+            double[][] transformation = new double[4][4];
             JSONArray transforms = conf.getJSONArray("transformation");
             for(int i=0; i<4; i++) {
                 JSONArray row = transforms.getJSONArray(i);
                 for(int j=0; j<4; j++) {
-                    this.transformation[i][j] = row.getDouble(j);
+                    transformation[i][j] = row.getDouble(j);
+                    //System.out.print(transformation[i][j] + " ");
                 }
+               // System.out.println();
             }
+            this.transformation_matrix = new SimpleMatrix(transformation);
         }
-        this.transformation = null;
+        else
+            this.transformation_matrix = null;
     }
 
     public Polygon() {
@@ -167,7 +171,7 @@ public class Polygon implements Entity{
                 ray.getOrigin().getY() + ray.getDirection().getY() * time,
                 ray.getOrigin().getZ() + ray.getDirection().getZ() * time);
         if(isTransformed()) {
-            return Vector.transform(intersection, getTransformation());
+            return Vector.transform(intersection, transformation_matrix);
         }
         return intersection;
     }
@@ -184,7 +188,7 @@ public class Polygon implements Entity{
         Vector normal = Vector.scale(1/(Vector.norm(Vector.cross(v1,v2))), Vector.cross(v1,v2));
 
         if(isTransformed()) {
-            return Vector.transform(normal, Vector.transpose(Vector.invert(getTransformation())));
+            return Vector.transform(normal, transformation_matrix.invert().transpose());
         }
         return normal;
     }
