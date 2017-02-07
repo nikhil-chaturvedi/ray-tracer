@@ -146,7 +146,7 @@ public class Polygon implements Entity{
         Vector origin = ray.getOrigin();
         Vector direction = ray.getDirection();
         double D = - (Vector.dot(normal, vertexlist[0]));
-        if(Vector.dot(normal, direction) < 0.01)
+        if(Math.abs(Vector.dot(normal, direction)) < 0.01)
             return 0;
         double t = - ((Vector.dot(normal, origin) + D)/(Vector.dot(normal, direction)));
         final double EPSILON = 0.01;

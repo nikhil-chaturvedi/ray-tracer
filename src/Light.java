@@ -13,11 +13,11 @@ class Light {
     }
 
     Colour getColour(Entity entity, Vector intersection, Vector normal, Vector eye) {
-        Colour ambientColour = getAmbientColour(entity);
+        //Colour ambientColour = getAmbientColour(entity);
         Colour diffuseColour = getDiffuseColour(entity, intersection, normal);
         Colour specularColour = getSpecularColour(entity, intersection, normal, eye);
         //return Colour.add(diffuseColour, ambientColour);
-        return Colour.add(ambientColour, Colour.add(diffuseColour, specularColour));
+        return Colour.add(diffuseColour, specularColour);
     }
 
     Colour getAmbientColour(Entity entity) {

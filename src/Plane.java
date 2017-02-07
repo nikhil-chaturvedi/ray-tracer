@@ -72,7 +72,8 @@ public class Plane implements Entity {
         Vector origin = ray.getOrigin();
         Vector direction = ray.getDirection();
         double D = - (Vector.dot(normal, point));
-
+        if(Math.abs(Vector.dot(normal, direction)) < 0.01)
+            return 0;
         double t = - ((Vector.dot(normal, origin) + D)/(Vector.dot(normal, direction)));
         final double EPSILON = 0.01;
         if (t<EPSILON)

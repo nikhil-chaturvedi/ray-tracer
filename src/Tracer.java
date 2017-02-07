@@ -6,11 +6,14 @@ import java.util.ArrayList;
 class Tracer {
     private ArrayList<Entity> entities;
     private ArrayList<Light> lights;
+
+    private Colour ambient;
     private Vector eye;
 
-    public Tracer(ArrayList<Entity> entities, ArrayList<Light> lights, Vector eye) {
+    public Tracer(ArrayList<Entity> entities, ArrayList<Light> lights, Colour ambient, Vector eye) {
         this.entities = entities;
         this.lights = lights;
+        this.ambient = ambient;
         this.eye = eye;
     }
 
@@ -27,16 +30,18 @@ class Tracer {
         Vector intersection = intersectingEntity.getIntersection(ray, timeOfIntersection);
         Vector normal = intersectingEntity.getNormal(intersection);
 
-        Colour colour = null;
+        Colour colour = Colour.multiply(ambient, intersectingEntity.getColour());
         for(Light light : lights) {
             if(depth==4) {
                 Vector shadow_vector = Vector.unit(Vector.subtract(light.getPosition(), intersection));
+                double t_light = Vector.norm(Vector.subtract(light.getPosition(), intersection));
                 Ray shadow_ray = new Ray(intersection, shadow_vector);
                 ArrayList<Entity> list_without_first_object = new ArrayList<Entity>(entities);
                 list_without_first_object.remove(intersectingEntity);
                 Entity obstruction = findIntersectingEntity(shadow_ray, list_without_first_object);
-                if (obstruction != null) {
-                    colour = Colour.add(colour, light.getAmbientColour(intersectingEntity));
+                double t_obstruction = findIntersectingTime(shadow_ray, list_without_first_object);
+                if (obstruction != null &&  t_obstruction < t_light) {
+                    continue;
                     //System.out.println("Shadow detected");
                 }
             }
@@ -86,5 +91,19 @@ class Tracer {
         }
 
         return intersectingEntity;
+    }
+    private double findIntersectingTime(Ray ray, ArrayList<Entity> entities) {
+        Entity intersectingEntity = null;
+        double minTimeIntersection = Double.MAX_VALUE;
+
+        for (Entity entity : entities) {
+            double timeOfIntersection = entity.getTimeIntersection(ray);
+            if (timeOfIntersection > 0.0 && timeOfIntersection < minTimeIntersection) {
+                intersectingEntity = entity;
+                minTimeIntersection = timeOfIntersection;
+            }
+        }
+
+        return minTimeIntersection;
     }
 }

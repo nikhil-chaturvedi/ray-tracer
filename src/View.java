@@ -22,6 +22,7 @@ class View {
 
     private ArrayList<Entity> entities;
     private ArrayList<Light> lights;
+    private Colour ambient;
 
     View(String configFileName) throws FileNotFoundException {
         String jsonConfig = new Scanner(new File(configFileName)).useDelimiter("\\Z").next();
@@ -58,6 +59,8 @@ class View {
             }
         }
 
+        this.ambient = new Colour(root.getJSONObject("ambient"), "col");
+
         this.lights = new ArrayList<>();
         JSONArray lights = root.getJSONArray("lights");
         for (int i = 0; i < lights.length(); i++) {
@@ -83,7 +86,7 @@ class View {
                 rayDir = Vector.unit(Vector.subtract(rayDir, eye));
                 Ray ray = new Ray(eye, rayDir);
 
-                Tracer tracer = new Tracer(entities, lights, eye);
+                Tracer tracer = new Tracer(entities, lights, ambient, eye);
                 Colour colour = tracer.trace(ray, 4);
 
                 if (colour == null)
