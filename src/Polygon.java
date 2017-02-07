@@ -1,4 +1,6 @@
 import java.util.Arrays;
+import org.json.JSONObject;
+import org.json.JSONArray;
 
 /**
  * Created by Kartikeya Sharma on 28-01-2017.
@@ -7,9 +9,12 @@ public class Polygon implements Entity{
     private int npoints;
     private Vector points[];
     private static final int MIN_LENGTH = 4;
-    private static final double EPSILON = 0.0000001;
+    private static final double EPSILON = 0.01;
     private Material material;
     private Colour colour;
+    private Vector normal;
+    private boolean isTransformed;
+    private double[][] transformation;
 
     @Override
     public Colour getColour() {
@@ -25,16 +30,42 @@ public class Polygon implements Entity{
         return npoints;
     }
 
-    public void setNpoints(int npoints) {
-        this.npoints = npoints;
-    }
-
     public Vector[] getPoints() {
         return points;
     }
 
-    public void setPoints(Vector[] points) {
-        this.points = points;
+    public boolean isTransformed() {
+        return isTransformed;
+    }
+
+    public double[][] getTransformation() {
+        return transformation;
+    }
+
+    Polygon (JSONObject conf) {
+        this.npoints = conf.getInt("npoints");
+        this.points = new Vector[this.npoints];
+        JSONObject pointslist = conf.getJSONObject("points");
+        for(int i=1; i<= npoints ; i++) {
+            JSONObject point = pointslist.getJSONObject("points_" + Integer.toString(i));
+            Vector temp = new Vector(point, "");
+            this.points[i-1] = temp;
+        }
+        this.colour = new Colour(conf.getJSONObject("colour"), "col");
+        this.material = new Material(conf.getJSONObject("material"));
+
+        this.isTransformed = conf.getBoolean("isTransformed");
+        if(isTransformed()) {
+            this.transformation = new double[4][4];
+            JSONArray transforms = conf.getJSONArray("transformation");
+            for(int i=0; i<4; i++) {
+                JSONArray row = transforms.getJSONArray(i);
+                for(int j=0; j<4; j++) {
+                    this.transformation[i][j] = row.getDouble(j);
+                }
+            }
+        }
+        this.transformation = null;
     }
 
     public Polygon() {
@@ -75,53 +106,70 @@ public class Polygon implements Entity{
         Vector v1 = new Vector();
         Vector v2 = new Vector();
         Vector vertexList[] = P.getPoints();
+        int num_points = P.getNpoints();
 
         for(i=0; i<vertexList.length; i++) {
             v1.setX(vertexList[i].getX() - q.getX());
             v1.setY(vertexList[i].getY() - q.getY());
             v1.setZ(vertexList[i].getZ() - q.getZ());
-            v1.setX(vertexList[(i+1)%P.getNpoints()].getX() - q.getX());
-            v1.setY(vertexList[(i+1)%P.getNpoints()].getY() - q.getY());
-            v1.setZ(vertexList[(i+1)%P.getNpoints()].getZ() - q.getZ());
+            v2.setX(vertexList[(i+1)%num_points].getX() - q.getX());
+            v2.setY(vertexList[(i+1)%num_points].getY() - q.getY());
+            v2.setZ(vertexList[(i+1)%num_points].getZ() - q.getZ());
 
             m1 = Vector.norm(v1);
             m2 = Vector.norm(v2);
 
-            if(m1*m2 <= EPSILON)
+            if(m1*m2 <= EPSILON) //IN CASE POINT COINCIDES WITH VERTEX
                 return true;
             else
                 costheta = (Vector.dot(v1,v2)) / (m1*m2);
             anglesum+= Math.acos(costheta);
         }
 
-        if(anglesum - 2*Math.PI <= EPSILON)
+        if(Math.abs(anglesum - 2*Math.PI) <= EPSILON)
             return true;
         return false;
     }
 
     public double getTimeIntersection(Ray ray) {
-        return 0.0;
-    }
-
-    public Vector getIntersection(Ray ray, double time) {
         Vector vertexlist[] = this.getPoints();
 
         Vector v1 = new Vector(vertexlist[1].getX() - vertexlist[0].getX(),
-                    vertexlist[1].getY() - vertexlist[0].getY(),
-                    vertexlist[1].getZ() - vertexlist[0].getZ());
+                vertexlist[1].getY() - vertexlist[0].getY(),
+                vertexlist[1].getZ() - vertexlist[0].getZ());
         Vector v2 = new Vector(vertexlist[2].getX() - vertexlist[1].getX(),
                 vertexlist[2].getY() - vertexlist[1].getY(),
                 vertexlist[2].getZ() - vertexlist[1].getZ());
 
         Vector normal = Vector.scale(1/(Vector.norm(Vector.cross(v1,v2))), Vector.cross(v1,v2));
+
         Vector origin = ray.getOrigin();
         Vector direction = ray.getDirection();
         double D = - (Vector.dot(normal, vertexlist[0]));
+        if(Vector.dot(normal, direction) < 0.01)
+            return 0;
         double t = - ((Vector.dot(normal, origin) + D)/(Vector.dot(normal, direction)));
+        final double EPSILON = 0.01;
+        if (t<EPSILON)
+            return 0.0;
+        Vector intersection = new Vector(origin.getX() + direction.getX() * t,
+                origin.getY() + direction.getY() * t,
+                origin.getZ() + direction.getZ() * t);
 
-        return new Vector(origin.getX() + direction.getX()*t,
-                            origin.getY() + direction.getY()*t,
-                            origin.getZ() + direction.getZ()*t);
+        if(isInside(intersection, this))
+            return t;
+        return 0.0;
+
+    }
+
+    public Vector getIntersection(Ray ray, double time) {
+        Vector intersection = new Vector(ray.getOrigin().getX() + ray.getDirection().getX() * time,
+                ray.getOrigin().getY() + ray.getDirection().getY() * time,
+                ray.getOrigin().getZ() + ray.getDirection().getZ() * time);
+        if(isTransformed()) {
+            return Vector.transform(intersection, getTransformation());
+        }
+        return intersection;
     }
 
     //Normal at every point is same? (We only care for direction, this shouldn't matter, in any case check)
@@ -134,6 +182,10 @@ public class Polygon implements Entity{
                 vertexlist[2].getY() - vertexlist[1].getY(),
                 vertexlist[2].getZ() - vertexlist[1].getZ());
         Vector normal = Vector.scale(1/(Vector.norm(Vector.cross(v1,v2))), Vector.cross(v1,v2));
+
+        if(isTransformed()) {
+            return Vector.transform(normal, Vector.transpose(Vector.invert(getTransformation())));
+        }
         return normal;
     }
 

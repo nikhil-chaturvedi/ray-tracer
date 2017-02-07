@@ -18,7 +18,7 @@ class Tracer {
         if (depth == 0)
             return null;
 
-        Entity intersectingEntity = findIntersectingEntity(ray);
+        Entity intersectingEntity = findIntersectingEntity(ray, entities);
 
         if (intersectingEntity == null)
             return null;
@@ -29,7 +29,19 @@ class Tracer {
 
         Colour colour = null;
         for(Light light : lights) {
-            colour = Colour.add(colour, light.getColour(intersectingEntity, intersection, normal, eye));
+            if(depth==4) {
+                Vector shadow_vector = Vector.unit(Vector.subtract(light.getPosition(), intersection));
+                Ray shadow_ray = new Ray(intersection, shadow_vector);
+                ArrayList<Entity> list_without_first_object = new ArrayList<Entity>(entities);
+                list_without_first_object.remove(intersectingEntity);
+                Entity obstruction = findIntersectingEntity(shadow_ray, list_without_first_object);
+                if (obstruction != null) {
+                    colour = Colour.add(colour, light.getAmbientColour(intersectingEntity));
+                    //System.out.println("Shadow detected");
+                }
+            }
+
+                colour = Colour.add(colour, light.getColour(intersectingEntity, intersection, normal, eye));
         }
 
         if (intersectingEntity.getMaterial().getReflectiveCoeff() > 0.01) {
@@ -61,7 +73,7 @@ class Tracer {
         return colour;
     }
 
-    private Entity findIntersectingEntity(Ray ray) {
+    private Entity findIntersectingEntity(Ray ray, ArrayList<Entity> entities) {
         Entity intersectingEntity = null;
         double minTimeIntersection = Double.MAX_VALUE;
 

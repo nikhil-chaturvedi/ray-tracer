@@ -29,7 +29,6 @@ class View {
 
         JSONObject viewRef = root.getJSONObject("view_reference");
         Vector viewReference = new Vector(viewRef, "ref");
-
         JSONObject viewPlane = root.getJSONObject("view_plane");
         Vector normal = new Vector(viewPlane, "normal");
 
@@ -50,6 +49,12 @@ class View {
             JSONObject entity = entities.getJSONObject(i);
             if (entity.has("sphere")) {
                 this.entities.add(new Sphere(entity.getJSONObject("sphere")));
+            }
+            if (entity.has("polygon")) {
+                this.entities.add(new Polygon(entity.getJSONObject("polygon")));
+            }
+            if(entity.has("plane")) {
+               this.entities.add(new Plane(entity.getJSONObject("plane")));
             }
         }
 

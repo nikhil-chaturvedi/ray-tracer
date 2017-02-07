@@ -1,4 +1,5 @@
 import org.json.JSONObject;
+import org.json.JSONArray;
 
 /**
  * Created by Nikhil on 27/01/17.
@@ -9,12 +10,26 @@ class Sphere implements Entity {
 
     private Colour colour;
     private Material material;
+    private boolean isTransformed;
+    private double[][] transformation;
 
     Sphere(JSONObject conf) {
         this.centre = new Vector(conf.getJSONObject("centre"), "centre");
         this.radius = conf.getDouble("radius");
         this.colour = new Colour(conf.getJSONObject("colour"), "col");
         this.material = new Material(conf.getJSONObject("material"));
+        this.isTransformed = conf.getBoolean("isTransformed");
+        if(isTransformed()) {
+            this.transformation = new double[4][4];
+            JSONArray transforms = conf.getJSONArray("transformation");
+            for(int i=0; i<4; i++) {
+                JSONArray row = transforms.getJSONArray(i);
+                for(int j=0; j<4; j++) {
+                    this.transformation[i][j] = row.getDouble(j);
+                }
+            }
+        }
+        this.transformation = null;
     }
 
     public double getTimeIntersection(Ray ray) {
@@ -44,9 +59,13 @@ class Sphere implements Entity {
     }
 
     public Vector getIntersection(Ray ray, double time) {
-        return new Vector(ray.getOrigin().getX() + ray.getDirection().getX()*time,
-                ray.getOrigin().getY() + ray.getDirection().getY()*time,
-                ray.getOrigin().getZ() + ray.getDirection().getZ()*time);
+        Vector intersection = new Vector(ray.getOrigin().getX() + ray.getDirection().getX() * time,
+                ray.getOrigin().getY() + ray.getDirection().getY() * time,
+                ray.getOrigin().getZ() + ray.getDirection().getZ() * time);
+        if(isTransformed()) {
+            return Vector.transform(intersection, getTransformation());
+        }
+        return intersection;
     }
 
     public Ray getRefractedRay (Ray ray, Vector intersection, Vector normal) {
@@ -73,8 +92,13 @@ class Sphere implements Entity {
     }
 
     public Vector getNormal(Vector intersection) {
-        return Vector.unit(Vector.subtract(intersection, centre));
+       Vector normal =  Vector.unit(Vector.subtract(intersection, centre));
+       if(isTransformed()) {
+           return Vector.transform(normal, Vector.transpose(Vector.invert(getTransformation())));
+       }
+       return normal;
     }
+
 
     public Colour getColour() {
         return colour;
@@ -83,5 +107,14 @@ class Sphere implements Entity {
     public Material getMaterial() {
         return material;
     }
+
+    public boolean isTransformed() {
+        return isTransformed;
+    }
+
+    public double[][] getTransformation() {
+        return transformation;
+    }
 }
+
 

@@ -7,7 +7,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         long startTime = System.currentTimeMillis();
         View view = new View("config.json");
-        view.render("view.png", 3);
+        view.render("view2.png", 3);
         long endTime = System.currentTimeMillis();
         System.out.println(endTime - startTime);
     }

@@ -20,7 +20,7 @@ class Light {
         return Colour.add(ambientColour, Colour.add(diffuseColour, specularColour));
     }
 
-    private Colour getAmbientColour(Entity entity) {
+    Colour getAmbientColour(Entity entity) {
         Colour multColour = Colour.multiply(this.colour, entity.getColour());
         return Colour.scale(entity.getMaterial().getAmbientCoeff(), multColour);
     }
@@ -53,5 +53,9 @@ class Light {
 
         Colour multColour = Colour.multiply(this.colour, entity.getColour());
         return Colour.scale(coeff, multColour);
+    }
+
+    public Vector getPosition() {
+        return position;
     }
 }
