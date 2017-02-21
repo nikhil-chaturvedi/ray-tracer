@@ -1,3 +1,6 @@
+import org.ejml.simple.SimpleEVD;
+import org.ejml.simple.SimpleMatrix;
+
 /**
  * Created by Nikhil on 27/01/17.
  */
@@ -8,4 +11,6 @@ interface Entity {
     Ray getRefractedRay(Ray ray, Vector intersection, Vector normal);
     Colour getColour();
     Material getMaterial();
+    public boolean isTransformed();
+    public SimpleMatrix getTransformation();
 }

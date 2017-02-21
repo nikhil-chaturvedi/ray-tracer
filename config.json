@@ -40,8 +40,8 @@
 					"mat_rough": 2,
 					"mat_index": 1.5
 				},
-				"isTransformed": false,
-				"transformation": [[1,0,0,0], [0,1,0,0], [0,0,1,0], [0,0,0,1]]
+				"isTransformed": true,
+				"transformation": [[1,0,0,0], [1.732,1,0,0], [0,0,1,0], [0,0,0,1]]
 			}
 		}, {
 			"sphere": {
@@ -146,53 +146,6 @@
 				"transformation": [[1,0,0,0], [0,1,0,0], [0,0,1,0], [0,0,0,1]]
 			}
 		}, {
-			"polygon": {
-				"npoints": 5,
-				"points": {
-					"points_1": {
-						"_x": 300,
-						"_y": 250,
-						"_z": 550
-					},
-					"points_2": {
-						"_x": 325,
-						"_y": 275,
-						"_z": 550
-					},
-					"points_3": {
-						"_x": 375,
-						"_y": 275,
-						"_z": 550
-					},
-					"points_4": {
-						"_x": 400,
-						"_y": 250,
-						"_z": 550
-					},
-					"points_5": {
-						"_x": 275,
-						"_y": 225,
-						"_z": 550
-					}
-				},
-				"colour": {
-					"col_r": 60,
-					"col_g": 60,
-					"col_b": 255
-				},
-				"material": {
-					"mat_ka": 0.75,
-					"mat_kd": 1.0,
-					"mat_ks": 1.0,
-					"mat_krg": 0.0,
-					"mat_ktg": 0.0,
-					"mat_rough": 2,
-					"mat_index": 1.5
-				},
-				"isTransformed": true,
-				"transformation": [[1,0,0,0], [0,0.5,0.866,0], [0,-0.866,0.5,0], [0,0,0,1]]
-			}
-		},{
 			"plane": {
 				"normal": {
 					"normal_x": 0,

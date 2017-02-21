@@ -167,13 +167,9 @@ public class Polygon implements Entity{
     }
 
     public Vector getIntersection(Ray ray, double time) {
-        Vector intersection = new Vector(ray.getOrigin().getX() + ray.getDirection().getX() * time,
+        return new Vector(ray.getOrigin().getX() + ray.getDirection().getX() * time,
                 ray.getOrigin().getY() + ray.getDirection().getY() * time,
                 ray.getOrigin().getZ() + ray.getDirection().getZ() * time);
-        if(isTransformed()) {
-            return Vector.transform(intersection, transformation_matrix);
-        }
-        return intersection;
     }
 
     //Normal at every point is same? (We only care for direction, this shouldn't matter, in any case check)
@@ -185,15 +181,14 @@ public class Polygon implements Entity{
         Vector v2 = new Vector(vertexlist[2].getX() - vertexlist[1].getX(),
                 vertexlist[2].getY() - vertexlist[1].getY(),
                 vertexlist[2].getZ() - vertexlist[1].getZ());
-        Vector normal = Vector.scale(1/(Vector.norm(Vector.cross(v1,v2))), Vector.cross(v1,v2));
-
-        if(isTransformed()) {
-            return Vector.transform(normal, transformation_matrix.invert().transpose());
-        }
-        return normal;
+        return Vector.scale(1/(Vector.norm(Vector.cross(v1,v2))), Vector.cross(v1,v2));
     }
 
     public Ray getRefractedRay (Ray ray, Vector intersection, Vector normal) {
         return ray;
+    }
+
+    public SimpleMatrix getTransformation() {
+        return transformation_matrix;
     }
 }

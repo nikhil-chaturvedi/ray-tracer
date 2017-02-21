@@ -65,16 +65,37 @@ class Vector {
     }
 
     static Vector transform(Vector v, SimpleMatrix transformation_matrix){
-       SimpleMatrix vector1 = new SimpleMatrix(1,4);
-       vector1.set(0,0,v.getX());
+       //SimpleMatrix vector1 = new SimpleMatrix(1,4);
+       double[] matrix2 = new double[4];
+       double[] matrix1 = new double[4];
+       matrix1[0] = v.getX();
+       matrix1[1] = v.getY();
+       matrix1[2] = v.getZ();
+       matrix1[3] = 1.0;
+       //if(Math.abs(v.getX()-50.0)<0.0001){ v.print();}
+       /*vector1.set(0,0,v.getX());
        vector1.set(0,1,v.getY());
        vector1.set(0,2,v.getZ());
-       vector1.set(0,3,1.0);
-       SimpleMatrix vector2 = vector1.mult(transformation_matrix);
-       if(Math.abs(vector2.get(0,3) - 1.0) < 0.01){
-           vector2.scale(1/vector2.get(0,3));
+       vector1.set(0,3,1.0);*/
+       for(int i=0; i<4; i++) {
+           double x = 0.0;
+           for(int j=0; j<4; j++) {
+               x += matrix1[i]*transformation_matrix.get(j,i);
+           }
+           matrix2[i] = x;
        }
-       return new Vector(vector2.get(0,0), vector2.get(0, 1), vector2.get(0,2));
+       //SimpleMatrix vector2 = vector1.mult(transformation_matrix);
+       if(Math.abs(matrix2[3] - 1.0) > 0.01){
+           matrix2[0] *= 1/matrix2[3];
+           matrix2[1] *= 1/matrix2[3];
+           matrix2[2] *= 1/matrix2[3];
+       }
+      /* if(Math.abs(vector2.get(0,3) - 1.0) > 0.01){
+           vector2.scale(1/vector2.get(0,3));
+       }*/
+       Vector v2 = new Vector(matrix2[0], matrix2[1], matrix2[2]);
+       // if(Math.abs(v.getX()-50.0)<0.0001){ v2.print();}
+        return v2;
     }
 
     void print() {

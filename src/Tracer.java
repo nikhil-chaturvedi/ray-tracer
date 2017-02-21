@@ -26,9 +26,17 @@ class Tracer {
         if (intersectingEntity == null)
             return null;
 
-        double timeOfIntersection = intersectingEntity.getTimeIntersection(ray);
+        if(intersectingEntity.isTransformed()) {
+            ray.transform(intersectingEntity.getTransformation());
+        }
+        double timeOfIntersection = intersectingEntity.getTimeIntersection(ray); //modify this
         Vector intersection = intersectingEntity.getIntersection(ray, timeOfIntersection);
         Vector normal = intersectingEntity.getNormal(intersection);
+
+        if(intersectingEntity.isTransformed()){
+            intersection = Vector.transform(intersection, intersectingEntity.getTransformation().invert());
+            normal = Vector.transform(normal, intersectingEntity.getTransformation().invert());
+        }
 
         Colour colour = Colour.multiply(ambient, intersectingEntity.getColour());
         for(Light light : lights) {

@@ -45,10 +45,6 @@ public class Plane implements Entity {
     }
 
     public Vector getNormal(Vector intersection) {
-
-        if(isTransformed()) {
-            return Vector.transform(normal, transformation_matrix.invert().transpose());
-        }
         return normal;
     }
 
@@ -84,17 +80,17 @@ public class Plane implements Entity {
     }
 
     public Vector getIntersection (Ray ray, double time) {
-        Vector intersection = new Vector(ray.getOrigin().getX() + ray.getDirection().getX() * time,
+        return new Vector(ray.getOrigin().getX() + ray.getDirection().getX() * time,
                 ray.getOrigin().getY() + ray.getDirection().getY() * time,
                 ray.getOrigin().getZ() + ray.getDirection().getZ() * time);
-       if(isTransformed()) {
-            return Vector.transform(intersection, transformation_matrix);
-        }
-        return intersection;
     }
 
     public Ray getRefractedRay (Ray ray, Vector intersection, Vector normal) {
         return ray;
+    }
+
+    public SimpleMatrix getTransformation() {
+        return transformation_matrix;
     }
 }
 

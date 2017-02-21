@@ -67,13 +67,9 @@ class Sphere implements Entity {
     }
 
     public Vector getIntersection(Ray ray, double time) {
-        Vector intersection = new Vector(ray.getOrigin().getX() + ray.getDirection().getX() * time,
+        return new Vector(ray.getOrigin().getX() + ray.getDirection().getX() * time,
                 ray.getOrigin().getY() + ray.getDirection().getY() * time,
                 ray.getOrigin().getZ() + ray.getDirection().getZ() * time);
-        if(isTransformed()) {
-            return Vector.transform(intersection, transformation_matrix);
-        }
-        return intersection;
     }
 
     public Ray getRefractedRay (Ray ray, Vector intersection, Vector normal) {
@@ -100,11 +96,7 @@ class Sphere implements Entity {
     }
 
     public Vector getNormal(Vector intersection) {
-       Vector normal =  Vector.unit(Vector.subtract(intersection, centre));
-       if(isTransformed()) {
-           return Vector.transform(normal, transformation_matrix.invert().transpose());
-       }
-       return normal;
+       return  Vector.unit(Vector.subtract(intersection, centre));
     }
 
 
@@ -118,6 +110,10 @@ class Sphere implements Entity {
 
     public boolean isTransformed() {
         return isTransformed;
+    }
+
+    public SimpleMatrix getTransformation() {
+        return transformation_matrix;
     }
 }
 

@@ -1,3 +1,5 @@
+import org.ejml.simple.SimpleMatrix;
+
 /**
  * Created by Nikhil on 27/01/17.
  */
@@ -24,5 +26,10 @@ class Ray {
 
     public void setDirection(Vector direction) {
         this.direction = direction;
+    }
+
+    public void transform(SimpleMatrix transformation_matrix) {
+        origin = Vector.transform(origin, transformation_matrix);
+        direction = Vector.transform(direction, transformation_matrix);
     }
 }
