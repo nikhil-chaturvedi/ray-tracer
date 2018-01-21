@@ -40,7 +40,7 @@
 					"mat_rough": 2,
 					"mat_index": 1.5
 				},
-				"isTransformed": true,
+				"isTransformed": false,
 				"transformation": [[1,0,0,0], [1.732,1,0,0], [0,0,1,0], [0,0,0,1]]
 			}
 		}, {
